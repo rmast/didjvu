@@ -42,13 +42,14 @@ def ddjvu(djvu_file, fmt='ppm'):
         stdout=ipc.PIPE,
         stderr=ipc.PIPE
     )
-    if isinstance(djvu_file, basestring):
+    if isinstance(djvu_file, str):
         djvu_path = djvu_file
         cmdline += [djvu_path]
     else:
         stdio.update(stdin=djvu_file)
     child = ipc.Subprocess(cmdline, **stdio)
     stdout, stderr = child.communicate()
+    stderr = stderr.decode()
     if child.returncode != 0:
         raise RuntimeError('ddjvu failed')
     if stderr != '':

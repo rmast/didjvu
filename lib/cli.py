@@ -99,9 +99,9 @@ def replace_underscores(s):
 
 def _get_method_params_help(methods):
     result = ['binarization methods and their parameters:']
-    for name, method in sorted(methods.iteritems()):
+    for name, method in sorted(methods.items()):
         result += ['  ' + name]
-        for arg in method.args.itervalues():
+        for arg in list(method.args.values()):
             arg_help = arg.name
             if arg.type in {int, float}:
                 arg_help += '=' + 'NX'[arg.type is float]
@@ -153,7 +153,7 @@ class ArgumentParser(argparse.ArgumentParser):
         bg_subsample = 3
 
     def __init__(self, methods, default_method):
-        argparse.ArgumentParser.__init__(self, formatter_class=argparse.RawDescriptionHelpFormatter)
+        super(ArgumentParser, self).__init__(formatter_class=argparse.RawDescriptionHelpFormatter)
         self.add_argument('--version', action=version.VersionAction)
         # --test is used internally to implement “make test(-installed)”; do not use directly
         self.add_argument('--test', nargs=argparse.REMAINDER, action=TestAction, help=argparse.SUPPRESS)
@@ -214,7 +214,7 @@ class ArgumentParser(argparse.ArgumentParser):
                         )
                     default_crcb = getattr(default, '{lr}_crcb'.format(lr=layer))
                     p.add_argument(
-                        '--{lr}-crcb'.format(lr=layer), choices=map(str, djvu.CRCB.values),
+                        '--{lr}-crcb'.format(lr=layer), choices=list(map(str, djvu.CRCB.values)),
                         help='chrominance encoding for {layer} (default: {crcb})'.format(layer=layer_name, crcb=default_crcb)
                     )
                     default_subsample = getattr(default, '{lr}_subsample'.format(lr=layer))
@@ -310,13 +310,18 @@ class ArgumentParser(argparse.ArgumentParser):
             if (arg.max is not None) and pvalue > arg.max:
                 self.error('parameter {0} must be <= {1}'.format(pname, arg.max))
             result[arg.name] = pvalue
-        for arg in o.method.args.itervalues():
+        for arg in list(o.method.args.values()):
             if (not arg.has_default) and (arg.name not in result):
                 self.error('parameter {0} is not set'.format(arg.name))
         return result
 
     def parse_args(self, actions):
         o = argparse.ArgumentParser.parse_args(self)
+        if not hasattr(o, 'fg_bg_defaults'):
+            import sys
+            self.print_usage()
+            print('didjvu: error: too few arguments')
+            sys.exit(2)
         if o.fg_bg_defaults is None:
             for layer in 'fg', 'bg':
                 namespace = argparse.Namespace()
@@ -354,7 +359,7 @@ def dump_options(o, multipage=False):
         method_name += ' '.join(
             '{0}={1}'.format(pname, pvalue)
             for pname, pvalue
-            in sorted(o.params.iteritems())
+            in sorted(o.params.items())
         )
     yield ('method', method_name)
     if multipage:

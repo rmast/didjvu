@@ -55,7 +55,7 @@ from gamera.plugins.pil_io import from_pil as _from_pil
 import gamera.args
 
 def has_version(*req_version):
-    return tuple(map(int, version.split('.'))) >= req_version
+    return True  # tuple(map(int, version.split('.'))) >= req_version
 
 def load_image(filename):
     pil_image = PIL.open(filename)
@@ -112,7 +112,7 @@ class Argument(object):
 
     def __init__(self, arg):
         self.name = arg.name.replace(' ', '-').replace('_', '-')
-        for gtype, ptype in self._type_map.iteritems():
+        for gtype, ptype in list(self._type_map.items()):
             if isinstance(arg, gtype):
                 self.type = ptype
                 break
@@ -158,7 +158,7 @@ class Plugin(object):
         kwargs = dict(
             (key.replace('-', '_'), value)
             for key, value
-            in kwargs.iteritems()
+            in list(kwargs.items())
         )
         pixel_types = self._pixel_types
         if image.data.pixel_type not in pixel_types:
@@ -192,7 +192,7 @@ def _load_methods():
         if has_version(3, 4, 0):
             from gamera.plugins.binarization import brink_threshold
     methods = {}
-    for name, plugin in vars(_methods).items():
+    for name, plugin in list(vars(_methods).items()):
         if name.startswith('_'):
             continue
         name = replace_suffix('', name)

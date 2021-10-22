@@ -48,7 +48,7 @@ def test_manpage():
 def test_get_software_agent():
     r = version.get_software_agent()
     assert_is_instance(r, str)
-    match = re.match('^didjvu [0-9.]+ [(]Gamera [0-9.]+[)]$', r)
+    match = re.match('^didjvu [0-9.]+ [(]Gamera [0-9.]+(pre)?[)]$', r)
     assert_is_not_none(match)
 
 # vim:ts=4 sts=4 sw=4 et

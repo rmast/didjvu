@@ -36,9 +36,9 @@ def check(filename):
     cls = generic
     with open(filename, 'rb') as file:
         header = file.read(16)
-        if header.startswith('AT&TFORM'):
+        if header.startswith(b'AT&TFORM'):
             cls = djvu
-            if header.endswith('DJVU'):
+            if header.endswith(b'DJVU'):
                 cls = djvu_single
     return cls
 

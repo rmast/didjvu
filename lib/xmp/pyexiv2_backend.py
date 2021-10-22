@@ -145,7 +145,7 @@ class MetadataBase(object):
             value = value.as_datetime(cls=datetime_for_pyexiv2)
         elif key.startswith('didjvu.'):
             value = str(value)
-        elif key == 'dc.format' and isinstance(value, basestring):
+        elif key == 'dc.format' and isinstance(value, str):
             value = tuple(value.split('/', 1))
         self._meta['Xmp.' + key] = value
 

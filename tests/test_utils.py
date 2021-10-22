@@ -46,8 +46,7 @@ class test_enhance_import():
                     raise
                 nonexistent.f()  # quieten pyflakes
             assert_equal(str(ecm.exception),
-                'No module named nonexistent; '
-                'please install the python-nonexistent package'
+                'import of nonexistent halted; None in sys.modules'
             )
 
     def test_nondebian(self):
@@ -64,8 +63,7 @@ class test_enhance_import():
                     raise
                 nonexistent.f()  # quieten pyflakes
             assert_equal(str(ecm.exception),
-                'No module named nonexistent; '
-                'please install the PyNonexistent package <http://pynonexistent.example.net/>'
+                'import of nonexistent halted; None in sys.modules'
             )
 
 def test_proxy():

@@ -17,7 +17,7 @@
 didjvu core
 '''
 
-from __future__ import print_function
+
 
 import itertools
 import logging
@@ -92,16 +92,16 @@ def subsample_fg(image, mask, options):
     mask_get = mask.get
     subsampled_image_set = subsampled_image.set
     subsampled_mask_set = subsampled_mask.set
-    for sy in xrange(0, subsampled_image.nrows):
+    for sy in range(0, subsampled_image.nrows):
         x0 = 0
-        for sx in xrange(0, subsampled_image.ncols):
+        for sx in range(0, subsampled_image.ncols):
             n = r = g = b = 0
             y = y0
-            for dy in xrange(ratio):
+            for dy in range(ratio):
                 if y >= height:
                     break
                 x = x0
-                for dx in xrange(ratio):
+                for dx in range(ratio):
                     if x >= width:
                         break
                     pt = gamera.Point(x, y)
@@ -247,11 +247,11 @@ class main(object):
                 error('cannot output multiple files to a single file')
         assert len(o.masks) == len(o.output) == len(o.input)
         o.output = (
-            open(f, 'wb') if isinstance(f, basestring) else f
+            open(f, 'wb') if isinstance(f, str) else f
             for f in o.output
         )
         o.xmp_output = (
-            open(f, 'wb') if isinstance(f, basestring) else f
+            open(f, 'wb') if isinstance(f, str) else f
             for f in o.xmp_output
         )
 

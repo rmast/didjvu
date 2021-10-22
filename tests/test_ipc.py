@@ -13,7 +13,7 @@
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
 # for more details.
 
-from __future__ import print_function
+
 
 import errno
 import locale
@@ -59,7 +59,7 @@ class test_wait():
         child = ipc.Subprocess(['false'])
         with assert_raises(ipc.CalledProcessError) as ecm:
             child.wait()
-        assert_equal(str(ecm.exception), "Command 'false' returned non-zero exit status 1")
+        assert_equal(str(ecm.exception), "Command 'false' returned non-zero exit status 1.")
 
     def _test_signal(self, name):
         child = ipc.Subprocess(['cat'], stdin=ipc.PIPE)  # Any long-standing process would do.
@@ -97,8 +97,8 @@ class test_environment():
                 stdout=ipc.PIPE, stderr=ipc.PIPE,
             )
             stdout, stderr = child.communicate()
-            assert_equal(stdout, '42')
-            assert_equal(stderr, '')
+            assert_equal(stdout, b'42')
+            assert_equal(stderr, b'')
 
     def test2(self):
         with interim_environ(didjvu='42'):
@@ -108,8 +108,8 @@ class test_environment():
                 env={},
             )
             stdout, stderr = child.communicate()
-            assert_equal(stdout, '42')
-            assert_equal(stderr, '')
+            assert_equal(stdout, b'42')
+            assert_equal(stderr, b'')
 
     def test3(self):
         with interim_environ(didjvu='42'):
@@ -119,8 +119,8 @@ class test_environment():
                 env=dict(didjvu='24'),
             )
             stdout, stderr = child.communicate()
-            assert_equal(stdout, '24')
-            assert_equal(stderr, '')
+            assert_equal(stdout, b'24')
+            assert_equal(stderr, b'')
 
     def test_path(self):
         path = os.getenv('PATH').split(':')
@@ -138,8 +138,8 @@ class test_environment():
                     stdout=ipc.PIPE, stderr=ipc.PIPE,
                 )
                 stdout, stderr = child.communicate()
-                assert_equal(stdout, '42')
-                assert_equal(stderr, '')
+                assert_equal(stdout, b'42')
+                assert_equal(stderr, b'')
 
     def _test_locale(self):
         child = ipc.Subprocess(['locale'],
@@ -149,9 +149,9 @@ class test_environment():
         stdout = stdout.splitlines()
         stderr = stderr.splitlines()
         assert_equal(stderr, [])
-        data = dict(line.split('=', 1) for line in stdout)
+        data = dict(line.decode().split('=', 1) for line in stdout)
         has_lc_all = has_lc_ctype = has_lang = 0
-        for key, value in data.iteritems():
+        for key, value in list(data.items()):
             if key == 'LC_ALL':
                 has_lc_all = 1
                 assert_equal(value, '')

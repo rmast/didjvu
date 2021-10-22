@@ -139,7 +139,7 @@ class Multichunk(object):
         self._dirty = set()  # Chunks that need to be re-read from the file.
         self._pristine = False  # Should save() be a no-op?
         self._file = None
-        for (k, v) in chunks.iteritems():
+        for (k, v) in list(chunks.items()):
             self[k] = v
 
     def _load_file(self):
@@ -234,7 +234,7 @@ class Multichunk(object):
             raise ValueError
         args = ['djvumake', None, 'INFO={w},{h},{r}'.format(w=self.width, h=self.height, r=self.dpi)]
         incl_dir = None
-        for key, value in sorted(self._chunks.iteritems(), key=_chunk_order):
+        for key, value in sorted(list(self._chunks.items()), key=_chunk_order):
             try:
                 key = self._chunk_names[key]
             except KeyError:
@@ -250,7 +250,7 @@ class Multichunk(object):
                 elif incl_dir != new_incl_dir:
                     raise ValueError
                 value = os.path.basename(value)
-            if not isinstance(value, basestring):
+            if not isinstance(value, str):
                 value = value.name
             if key == 'BG44':
                 value += ':99'

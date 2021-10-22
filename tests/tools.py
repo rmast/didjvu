@@ -37,17 +37,22 @@ from nose.tools import (
 
 type(assert_multi_line_equal.__self__).maxDiff = None
 
+
 def assert_image_sizes_equal(i1, i2):
     assert_equal(i1.size, i2.size)
+
 
 def assert_images_equal(i1, i2):
     assert_equal(i1.size, i2.size)
     assert_equal(i1.mode, i2.mode)
+    i1.save('i1.png')
+    i2.save('i2.png')
     assert_true(
         list(i1.getdata()) ==
         list(i2.getdata()),
         msg='images are not equal'
     )
+
 
 def assert_rfc3339_timestamp(timestamp):
     return assert_regex(
@@ -55,19 +60,21 @@ def assert_rfc3339_timestamp(timestamp):
         '^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}([+-][0-9]{2}:[0-9]{2}|Z)$',
     )
 
+
 @contextlib.contextmanager
 def interim(obj, **override):
     copy = dict(
         (key, getattr(obj, key))
         for key in override
     )
-    for key, value in override.iteritems():
+    for key, value in list(override.items()):
         setattr(obj, key, value)
     try:
         yield
     finally:
-        for key, value in copy.iteritems():
+        for key, value in list(copy.items()):
             setattr(obj, key, value)
+
 
 @contextlib.contextmanager
 def interim_environ(**override):
@@ -75,10 +82,10 @@ def interim_environ(**override):
     copy_keys = keys & set(os.environ)
     copy = dict(
         (key, value)
-        for key, value in os.environ.iteritems()
+        for key, value in list(os.environ.items())
         if key in copy_keys
     )
-    for key, value in override.iteritems():
+    for key, value in list(override.items()):
         if value is None:
             os.environ.pop(key, None)
         else:
@@ -90,8 +97,10 @@ def interim_environ(**override):
             os.environ.pop(key, None)
         os.environ.update(copy)
 
+
 class IsolatedException(Exception):
     pass
+
 
 def _n_relevant_tb_levels(tb):
     n = 0
@@ -99,6 +108,7 @@ def _n_relevant_tb_levels(tb):
         n += 1
         tb = tb.tb_next
     return n
+
 
 def fork_isolation(f):
 
@@ -128,7 +138,7 @@ def fork_isolation(f):
                 s = traceback.format_exception(exctp, exc, tb, _n_relevant_tb_levels(tb))
                 s = ''.join(s)
                 del tb
-                with os.fdopen(writefd, 'wb') as fp:
+                with os.fdopen(writefd, 'wt') as fp:
                     fp.write(s)
                 exit(EXIT_EXCEPTION)
             exit(0)
@@ -137,6 +147,7 @@ def fork_isolation(f):
             os.close(writefd)
             with os.fdopen(readfd, 'rb') as fp:
                 msg = fp.read()
+            msg = msg.decode()
             msg = msg.rstrip('\n')
             pid, status = os.waitpid(pid, 0)
             if status == (EXIT_EXCEPTION << 8):
@@ -149,6 +160,7 @@ def fork_isolation(f):
                 raise RuntimeError('unexpected isolated process status {0}'.format(status))
 
     return wrapper
+
 
 if 'coverage' in sys.modules:
     fork_isolation  # quieten pyflakes

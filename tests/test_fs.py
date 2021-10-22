@@ -24,8 +24,8 @@ from lib import fs
 
 def test_copy_file():
     def t(s):
-        input_file = io.BytesIO(s)
-        output_file = io.BytesIO()
+        input_file = io.StringIO(s)
+        output_file = io.StringIO()
         length = fs.copy_file(input_file, output_file)
         assert_equal(output_file.tell(), length)
         output_file.seek(0)

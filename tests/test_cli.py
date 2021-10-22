@@ -31,6 +31,7 @@ from .tools import (
 
 from lib import cli
 
+
 class test_range_int():
 
     def test_lt_min(self):
@@ -59,6 +60,7 @@ class test_range_int():
             t('')
         with assert_raises(ValueError):
             t('ham')
+
 
 class test_slice_type():
 
@@ -134,6 +136,7 @@ class test_slice_type():
         with assert_raises(ValueError):
             t('42+-5')
 
+
 def test_slice_repr():
 
     def t(inp, exp):
@@ -146,10 +149,12 @@ def test_slice_repr():
     t([42], '42')
     t([23, 37, 42], '23+14+5')
 
+
 def test_intact():
     x = object()
     intact_x = cli.intact(x)
     assert_is(intact_x(), x)
+
 
 def test_replace_underscores():
     assert_equal(
@@ -157,15 +162,18 @@ def test_replace_underscores():
         'eggs-ham-spam'
     )
 
+
 class MockActions(object):
     def __getattr__(self, name):
         def f(options):
             return (name, options)
         return f
 
+
 class MockMethod(object):
     def __init__(self):
         self.args = {}
+
 
 class test_argument_parser():
 
@@ -184,20 +192,20 @@ class test_argument_parser():
         cli.ArgumentParser(self.methods, 'djvu')
 
     def test_no_args(self):
-        stderr = io.BytesIO()
-        with interim(sys, argv=['didjvu'], stderr=stderr):
+        stdout = io.StringIO()
+        with interim(sys, argv=['didjvu'], stdout=stdout):
             ap = cli.ArgumentParser(self.methods, 'djvu')
             with assert_raises(SystemExit) as ecm:
                 ap.parse_args({})
             assert_equal(ecm.exception.args, (2,))
         assert_multi_line_equal(
-            stderr.getvalue(),
+            stdout.getvalue(),
             'usage: didjvu [-h] [--version] {{{actions}}} ...\n'
             'didjvu: error: too few arguments\n'.format(actions=','.join(self.anames))
         )
 
     def _test_action_no_args(self, action):
-        stderr = io.BytesIO()
+        stderr = io.StringIO()
         with interim(sys, argv=['didjvu', action], stderr=stderr):
             ap = cli.ArgumentParser(self.methods, 'djvu')
             with assert_raises(SystemExit) as ecm:
@@ -207,7 +215,7 @@ class test_argument_parser():
             stderr.getvalue(),
             (r'(?s)\A'
             'usage: didjvu {action} .*\n'
-            'didjvu {action}: error: too few arguments\n'
+            'didjvu {action}: error: the following arguments are required: .*'
             r'\Z').format(action=action)
         )
 
@@ -218,7 +226,7 @@ class test_argument_parser():
         yield t, 'encode'
 
     def test_bad_action(self, action='eggs'):
-        stderr = io.BytesIO()
+        stderr = io.StringIO()
         with interim(sys, argv=['didjvu', action], stderr=stderr):
             ap = cli.ArgumentParser(self.methods, 'djvu')
             with assert_raises(SystemExit) as ecm:
@@ -231,7 +239,7 @@ class test_argument_parser():
         )
 
     def _test_action(self, action, *args):
-        stderr = io.BytesIO()
+        stderr = io.StringIO()
         argv = ['didjvu', action]
         argv += args
         with interim(sys, argv=argv, stderr=stderr):
@@ -268,8 +276,8 @@ class test_argument_parser():
 
     def _test_help(self, action=None):
         argv = ['didjvu', action, '--help']
-        argv = filter(None, argv)
-        stdout = io.BytesIO()
+        argv = list([_f for _f in argv if _f])
+        stdout = io.StringIO()
         with interim(sys, argv=argv, stdout=stdout):
             ap = cli.ArgumentParser(self.methods, 'djvu')
             with assert_raises(SystemExit) as ecm:

@@ -34,9 +34,9 @@ datadir = os.path.join(os.path.dirname(__file__), 'data')
 def test_load_image():
     paths = []
     for ext in ['tiff', 'png', 'pgm', 'bmp']:
-        paths += map(os.path.basename,
+        paths += list(map(os.path.basename,
             glob.glob(os.path.join(datadir, '*.' + ext))
-        )
+        ))
     @fork_isolation
     def t(path):
         dpi_match = re.search('dpi([0-9]+)', path)
