@@ -233,6 +233,10 @@ class ArgumentParser(argparse.ArgumentParser):
                     '-p', '--pages-per-dict', type=int, metavar='N',
                     help='how many pages to compress in one pass (default: {n})'.format(n=default.pages_per_dict)
                 )
+                p.add_argument(
+                    '-2', '--minidjvu-mod', action="store_true", default=False,
+                    help='use minidjvu-mod instead of minidjvu'
+                )
             p.add_argument(
                 '-m', '--method', choices=methods, metavar='METHOD', type=replace_underscores, default=default_method,
                 help='binarization method (default: {method})'.format(method=default_method)
@@ -364,6 +368,7 @@ def dump_options(o, multipage=False):
     yield ('method', method_name)
     if multipage:
         yield ('pages-per-dict', o.pages_per_dict)
+        yield ('minidjvu-mod', o.minidjvu_mod)
     yield ('loss-level', o.loss_level)
     if o.fg_bg_defaults:
         yield ('fg-bg-defaults', True)

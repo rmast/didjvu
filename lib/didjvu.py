@@ -351,7 +351,10 @@ class main(object):
         if (o.pages_per_dict <= 1) or (len(o.input) <= 1):
             self.bundle_simple(o)
         else:
-            ipc.require('minidjvu')
+            if (o.minidjvu_mod):
+                ipc.require('minidjvu-mod')
+            else:
+                ipc.require('minidjvu')
             self.bundle_complex(o)
         [xmp_output] = o.xmp_output
         if xmp_output:
@@ -442,10 +445,18 @@ class main(object):
                 logger.info('creating shared dictionaries')
                 def chdir():
                     os.chdir(minidjvu_out_dir)
-                arguments = ['minidjvu',
-                    '--indirect',
-                    '--aggression', str(o.loss_level),
-                    '--pages-per-dict', str(o.pages_per_dict),
+                if (o.minidjvu_mod):
+                    arguments = ['minidjvu-mod',
+                        '--indirect',
+                        '--aggression', str(o.loss_level),
+                        '--pages-per-dict', str(o.pages_per_dict),
+                        '-X', 'iff',
+                ]
+                else:
+                    arguments = ['minidjvu',
+                        '--indirect',
+                        '--aggression', str(o.loss_level),
+                        '--pages-per-dict', str(o.pages_per_dict),
                 ]
                 assert len(page_info) > 1  # minidjvu won't create single-page indirect documents
                 arguments += [page.sjbz_symlink for page in page_info]
