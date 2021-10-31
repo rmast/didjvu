@@ -14,8 +14,8 @@ Prerequisites
 
 The following software is required:
 
-* Python_ 2.7
-* Gamera_ (≥ 3.3.2)
+* Python_ 3
+* Gamera-4_ (≥ 4.0.pre)
 * Pillow_
 * DjVuLibre_ (≥ 3.5.22)
 * minidjvu_ (≥ 0.8) for the ``--pages-per-dict``/``-p`` option
@@ -43,5 +43,7 @@ option:
    https://github.com/python-xmp-toolkit/python-xmp-toolkit
 .. _pyexiv2:
    https://launchpad.net/pyexiv2
+.. _Gamera-4:
+   https://github.com/hsnr-gamera/gamera-4
 
 .. vim:ft=rst ts=3 sts=3 sw=3 et tw=72
