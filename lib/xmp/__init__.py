@@ -113,7 +113,7 @@ def metadata(backend=backend):
 
         def import_(self, image_filename):
             try:
-                file = open(image_filename + '.xmp', 'rb')
+                file = open(image_filename + '.xmp', 'rt')
             except (OSError, IOError) as ex:
                 if ex.errno == errno.ENOENT:
                     return
