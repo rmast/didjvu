@@ -266,7 +266,7 @@ class Multichunk(object):
             self._pristine = True
             return self._file
 
-_djvu_header = 'AT&TFORM\0\0\0\0DJVMDIRM\0\0\0\0\1'
+_djvu_header = b'AT&TFORM\0\0\0\0DJVMDIRM\0\0\0\0\1'
 
 def bundle_djvu_via_indirect(*component_filenames):
     with temporary.directory() as tmpdir:
@@ -292,15 +292,15 @@ def bundle_djvu_via_indirect(*component_filenames):
                 for page_id in page_ids:
                     bzz.stdin.write(struct.pack('B', not page_id.endswith('.iff')))
                 for page_id in page_ids:
-                    bzz.stdin.write(page_id)
-                    bzz.stdin.write('\0')
+                    bzz.stdin.write(page_id.encode('utf-8'))
+                    bzz.stdin.write(b'\0')
             finally:
                 bzz.stdin.close()
                 bzz.wait()
             index_file_size = index_file.tell()
             i = 0
             while True:
-                i = _djvu_header.find('\0' * 4, i)
+                i = _djvu_header.find(b'\0' * 4, i)
                 if i < 0:
                     break
                 index_file.seek(i)

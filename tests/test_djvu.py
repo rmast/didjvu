@@ -16,6 +16,7 @@
 import io
 import os
 import shutil
+from unittest import mock, TestCase
 
 from .tools import (
     assert_equal,
@@ -144,5 +145,17 @@ class test_validate_page_id():
     def test_ok(self):
         n = 'eggs.djvu'
         assert_equal(djvu.validate_page_id(n), n)
+
+
+class BundleDjvuViaIndirectTestCase(TestCase):
+    def test_string_versus_bytes_issue(self):
+        # Simplify the test by mocking away the subprocess communication which does
+        # not directly influence the error.
+        with mock.patch.object(djvu.ipc.Subprocess, 'wait'):
+            djvu_path = djvu.bundle_djvu_via_indirect(
+                *[os.path.join(datadir, 'onebit.png')]
+            )
+            self.assertTrue(os.path.exists(djvu_path.name))
+
 
 # vim:ts=4 sts=4 sw=4 et
