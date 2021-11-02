@@ -14,8 +14,6 @@
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
 # for more details.
 
-from __future__ import print_function
-
 import glob
 import io
 import os
@@ -48,7 +46,7 @@ def main():
     ] + modules
     path = os.path.join('tests', 'coverage')
     plugin = Coverage()
-    report_stream = plugin.stream = io.BytesIO()
+    report_stream = plugin.stream = io.StringIO()
     print('Generated automatically by private/update-coverage. '
         'Do not edit.\n', file=report_stream)
     ok = nose.run(argv=argv, plugins=[plugin])
