@@ -235,7 +235,7 @@ class test_argument_parser():
         assert_multi_line_equal(
             stderr.getvalue(),
             'usage: didjvu [-h] [--version] {{{actions}}} ...\n'.format(actions=','.join(self.anames)) +
-            "didjvu: error: invalid choice: 'eggs' (choose from {actions})\n".format(actions=', '.join(map(repr, self.anames)))
+            "didjvu: error: " + ("" if sys.version_info < (3,9) else 'argument {{{actions}}}: '.format(actions=','.join(self.anames))) + "invalid choice: 'eggs' (choose from {actions})\n".format(actions=', '.join(map(repr, self.anames)))
         )
 
     def _test_action(self, action, *args):
