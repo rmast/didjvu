@@ -28,7 +28,7 @@ try:
 except ImportError as ex:  # no coverage
     utils.enhance_import_error(ex,
         'Pillow',
-        'python-pil',
+        'python3-pil',
         'https://pypi.org/project/Pillow/'
     )
     raise
@@ -38,8 +38,8 @@ try:
 except ImportError as ex:  # no coverage
     utils.enhance_import_error(ex,
         'Gamera',
-        'python-gamera',
-        'https://gamera.informatik.hsnr.de/'
+        '',
+        'https://github.com/hsnr-gamera/gamera-4'
     )
     raise
 del gamera  # quieten pyflakes

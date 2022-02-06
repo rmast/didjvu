@@ -46,7 +46,26 @@ class test_enhance_import():
                     raise
                 nonexistent.f()  # quieten pyflakes
             assert_equal(str(ecm.exception),
-                'import of nonexistent halted; None in sys.modules'
+                'import of nonexistent halted; None in sys.modules; '
+                'please install the python-nonexistent package'
+            )
+
+    def test_debian_without_debian_package_name(self):
+        with interim(utils, debian=True):
+            with assert_raises(ImportError) as ecm:
+                try:
+                    import nonexistent
+                except ImportError as ex:
+                    utils.enhance_import_error(ex,
+                        'PyNonexistent',
+                        '',
+                        'http://pynonexistent.example.net/'
+                    )
+                    raise
+                nonexistent.f()  # quieten pyflakes
+            assert_equal(str(ecm.exception),
+                'import of nonexistent halted; None in sys.modules; '
+                'please install the PyNonexistent package <http://pynonexistent.example.net/>'
             )
 
     def test_nondebian(self):
@@ -63,7 +82,8 @@ class test_enhance_import():
                     raise
                 nonexistent.f()  # quieten pyflakes
             assert_equal(str(ecm.exception),
-                'import of nonexistent halted; None in sys.modules'
+                'import of nonexistent halted; None in sys.modules; '
+                'please install the PyNonexistent package <http://pynonexistent.example.net/>'
             )
 
 def test_proxy():
