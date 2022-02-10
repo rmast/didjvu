@@ -47,9 +47,10 @@ class MetadataBase(object):
     def _read_data(self, data):
         fp = temporary.file(suffix='.xmp')
         try:
-            fp.write(data)
+            fp.write(data.encode('utf-8'))
             fp.flush()
-            self._meta = GExiv2.Metadata(fp.name)
+            self._meta = GExiv2.Metadata()
+            assert self._meta.open_path(fp.name)
         finally:
             fp.close()
 
@@ -63,14 +64,17 @@ class MetadataBase(object):
             return fallback
 
     def __getitem__(self, key):
-        return self._meta['Xmp.' + key]
+        value = self._meta.get_tag_string('Xmp.' + key)
+        if value is None:
+            raise KeyError('Xmp.' + key)
+        return value
 
     def __setitem__(self, key, value):
         if isinstance(value, timestamp.Timestamp):
             value = str(value)
         elif key.startswith('didjvu.'):
             value = str(value)
-        self._meta['Xmp.' + key] = value
+        self._meta.set_tag_string('Xmp.' + key, value)
 
     def _add_to_history(self, event, index):
         for key, value in event.items:

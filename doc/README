@@ -25,7 +25,7 @@ option:
 
 * GExiv2_ (≥ 0.10.3) + PyGI_ or
 * python-xmp-toolkit_ or
-* pyexiv2_ (≥ 0.3)
+* py3exiv2_
 
 .. _Python:
    https://www.python.org/
@@ -41,8 +41,8 @@ option:
    https://wiki.gnome.org/Projects/PyGObject
 .. _python-xmp-toolkit:
    https://github.com/python-xmp-toolkit/python-xmp-toolkit
-.. _pyexiv2:
-   https://launchpad.net/pyexiv2
+.. _py3exiv2:
+   https://launchpad.net/py3exiv2
 .. _Gamera-4:
    https://github.com/hsnr-gamera/gamera-4
 

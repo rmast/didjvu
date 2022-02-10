@@ -114,7 +114,7 @@ class MetadataBase(object):
         fp.write(
             '<x:xmpmeta xmlns:x="adobe:ns:meta/" xmlns:rdf="{ns.rdf}">'
             '<rdf:RDF/>'
-            '</x:xmpmeta>'.format(ns=ns)
+            '</x:xmpmeta>'.format(ns=ns).encode('utf-8')
         )
         self._reload()
 
@@ -145,8 +145,8 @@ class MetadataBase(object):
             value = value.as_datetime(cls=datetime_for_pyexiv2)
         elif key.startswith('didjvu.'):
             value = str(value)
-        elif key == 'dc.format' and isinstance(value, str):
-            value = tuple(value.split('/', 1))
+        #elif key == 'dc.format' and isinstance(value, str):
+            #value = tuple(value.split('/', 1))
         self._meta['Xmp.' + key] = value
 
     def _add_to_history(self, event, index):
@@ -168,14 +168,14 @@ class MetadataBase(object):
         self._meta.write()
         fp = self._fp
         fp.seek(0)
-        return fp.read()
+        return fp.read().decode('utf-8')
 
     def read(self, file):
         data = file.read()
         fp = self._fp
         fp.seek(0)
         fp.truncate()
-        fp.write(data)
+        fp.write(data.encode('utf-8'))
         self._reload()
 
 __all__ = ['MetadataBase']

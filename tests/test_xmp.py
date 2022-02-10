@@ -99,10 +99,10 @@ def run_exiv2(filename, fail_ok=False):
     except OSError as ex:
         raise SkipTest(ex)
     for line in sorted(child.stdout):
-        yield line
+        yield line.decode('utf-8')
     stderr = child.stderr.read()
     if not fail_ok:
-        assert_equal(stderr, '')
+        assert_equal(stderr.decode('utf-8'), '')
     try:
         child.wait()
     except ipc.CalledProcessError:
